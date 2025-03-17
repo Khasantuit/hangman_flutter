@@ -92,17 +92,17 @@ class _GameScreenState extends State<GameScreen> {
               SizedBox(height: 20),
               Text(
                 'Soʻz turkumi: ${currentWord['type']}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.yellow),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
               ),
               SizedBox(height: 10),
               Text(
                 'Bosh harf: ${currentWord['first_letter']}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.lightBlue),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               SizedBox(height: 20),
               Text(
                 currentWord['word']!.split('').map((char) => guessedLetters.contains(char) ? char : '_').join(' '),
-                style: TextStyle(fontSize: 24, letterSpacing: 5),
+                style: TextStyle(fontSize: 24, letterSpacing: 5, color: Colors.black),
               ),
               SizedBox(height: 20),
               Wrap(
