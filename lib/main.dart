@@ -10,7 +10,13 @@ class HangmanApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Виселица',
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        // primarySwatch: Colors.brown,
+        scaffoldBackgroundColor: Color(0xFFF5E1B3), // Qog‘oz fon rangi
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'Courier', color: Colors.black),
+        ),
+      ),
       home: GameScreen(),
     );
   }
