@@ -6,7 +6,9 @@ class HangmanPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..strokeWidth = 4..color = Colors.white;
+    final paint = Paint()
+      ..strokeWidth = 4
+      ..color = Colors.black;
 
     // O‘lim maydonini chizish
     canvas.drawLine(Offset(20, size.height), Offset(120, size.height), paint);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'words.dart'; // So‘zlar alohida faylda saqlanadi
+import 'words.dart'; // So‘zlar ro‘yxati (word, type, first_letter)
+import 'main.dart';
+import 'hangman_painter.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -68,82 +70,59 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Виселица')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomPaint(
-            size: Size(200, 300),
-            painter: HangmanPainter(wrongGuesses),
+      body: Container(
+        width: double.infinity, // ✅ Rasmni to‘liq ekranga sig‘dirish
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/background.png"), // ✅ Orqa fon rasmi
+            fit: BoxFit.cover, // ✅ Rasmni ekranga to‘liq joylashtirish
+            alignment: Alignment.center, // ✅ Rasmni to‘g‘ri joylash uchun
           ),
-          SizedBox(height: 20),
-          Text(
-            'Soʻz turkumi: ${currentWord['type']}',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.brown),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Bosh harf: ${currentWord['first_letter']}',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.brown),
-          ),
-          SizedBox(height: 20),
-          Text(
-            currentWord['word']!.split('').map((char) => guessedLetters.contains(char) ? char : '_').join(' '),
-            style: TextStyle(fontSize: 24, letterSpacing: 5, fontFamily: 'Courier', color: Colors.black),
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 8, // Harflarni sig‘dirish uchun 8 ta ustun
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              padding: EdgeInsets.all(10),
-              children: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЧШЎЪЭЮЯҚҒҲ'.split('').map((letter) {
-                return ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.brown.shade300,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 50),
+              CustomPaint(
+                size: Size(200, 300),
+                painter: HangmanPainter(wrongGuesses),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Soʻz turkumi: ${currentWord['type']}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.yellow),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Bosh harf: ${currentWord['first_letter']}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.lightBlue),
+              ),
+              SizedBox(height: 20),
+              Text(
+                currentWord['word']!.split('').map((char) => guessedLetters.contains(char) ? char : '_').join(' '),
+                style: TextStyle(fontSize: 24, letterSpacing: 5),
+              ),
+              SizedBox(height: 20),
+              Wrap(
+                children: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЧШЎЪЭЮЯҚҒҲ'.split('').map((letter) {
+                  return Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ElevatedButton(
+                      onPressed: guessedLetters.contains(letter) || wrongGuesses >= maxWrongGuesses
+                          ? null
+                          : () => guessLetter(letter),
+                      child: Text(letter, style: TextStyle(fontSize: 18)),
                     ),
-                  ),
-                  onPressed: guessedLetters.contains(letter) || wrongGuesses >= maxWrongGuesses
-                      ? null
-                      : () => guessLetter(letter),
-                  child: Text(letter, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Courier')),
-                );
-              }).toList(),
-            ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 50),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
-}
-
-class HangmanPainter extends CustomPainter {
-  final int wrongGuesses;
-  HangmanPainter(this.wrongGuesses);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..strokeWidth = 4
-      ..color = Colors.black;
-
-    // O‘lim maydonini chizish
-    canvas.drawLine(Offset(20, size.height), Offset(120, size.height), paint);
-    canvas.drawLine(Offset(70, size.height), Offset(70, 20), paint);
-    canvas.drawLine(Offset(70, 20), Offset(150, 20), paint);
-    canvas.drawLine(Offset(150, 20), Offset(150, 40), paint);
-
-    if (wrongGuesses > 0) canvas.drawCircle(Offset(150, 60), 20, paint); // Bosh
-    if (wrongGuesses > 1) canvas.drawLine(Offset(150, 80), Offset(150, 140), paint); // Tana
-    if (wrongGuesses > 2) canvas.drawLine(Offset(150, 90), Offset(130, 120), paint); // Chap qo‘l
-    if (wrongGuesses > 3) canvas.drawLine(Offset(150, 90), Offset(170, 120), paint); // O‘ng qo‘l
-    if (wrongGuesses > 4) canvas.drawLine(Offset(150, 140), Offset(130, 180), paint); // Chap oyoq
-    if (wrongGuesses > 5) canvas.drawLine(Offset(150, 140), Offset(170, 180), paint); // O‘ng oyoq
-  }
-
-  @override
-  bool shouldRepaint(HangmanPainter oldDelegate) => true;
 }
